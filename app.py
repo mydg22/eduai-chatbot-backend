@@ -12,7 +12,7 @@ CORS(app)
 # Tu clave de API de Gemini. Es MEJOR obtenerla de una variable de entorno
 # por seguridad, pero para la demostración la ponemos directamente.
 # ¡NUNCA expongas esto en un repositorio público!
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyBUE_Qo80jhVA_Z-c3mOPTrfE8lwod9Rsk") # <--- ¡REEMPLAZA ESTO!
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "") # <--- ¡REEMPLAZA ESTO!
 
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 
