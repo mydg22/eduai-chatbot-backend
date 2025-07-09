@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de System Prompts</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        .container {
+            max-width: 900px;
+        }
+        textarea {
+            resize: vertical;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        /* Loading spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3b82f6; /* Blue-500 */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="container bg-white shadow-xl rounded-xl p-8 md:p-12 space-y-8">
+        <h1 class="text-4xl font-extrabold text-gray-900 text-center mb-2">
+            ✨ Generador de <span class="text-indigo-600">System Prompts</span> ✨
+        </h1>
+        <p class="text-gray-600 text-center mb-6 text-xl font-semibold">
+            EDUAI. JULIO 2025 Prof. Magda Diaz
+        </p>
+        <p class="text-gray-600 text-center mb-8">
+            Define la personalidad y el comportamiento de tu chatbot para cada materia.
+        </p>
+
+        <form id="promptForm" class="space-y-6">
+            <!-- Nombre de la Materia -->
+            <div>
+                <label for="courseName" class="block text-lg font-semibold text-gray-700 mb-2">
+                    1. Nombre de la Materia:
+                </label>
+                <input type="text" id="courseName" name="courseName" placeholder="Ej: Historia Universal, Cálculo I"
+                       class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+            </div>
+
+            <!-- Rol del Chatbot -->
+            <div>
+                <label for="botRole" class="block text-lg font-semibold text-gray-700 mb-2">
+                    2. Rol del Chatbot:
+                </label>
+                <select id="botRole" name="botRole"
+                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+                    <option value="asistente de IA" selected>Asistente de IA</option>
+                    <option value="tutor de estudio">Tutor de Estudio</option>
+                    <option value="guía de lectura">Guía de Lectura</option>
+                    <option value="resolutor de dudas">Resolutor de Dudas</option>
+                    <option value="depurador de código">Depurador de Código</option>
+                    <option value="otro">Otro (especificar en Instrucciones Adicionales)</option>
+                </select>
+            </div>
+
+            <!-- Propósito Principal -->
+            <div>
+                <label for="mainPurpose" class="block text-lg font-semibold text-gray-700 mb-2">
+                    3. Propósito Principal del Chatbot (¿Qué debe hacer?):
+                </label>
+                <textarea id="mainPurpose" name="mainPurpose" rows="4"
+                          placeholder="Ej: Ayudar a los estudiantes a comprender conceptos clave, resolver ejercicios, repasar temas para exámenes."
+                          class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"></textarea>
+            </div>
+
+            <!-- Tono y Estilo -->
+            <div>
+                <label for="toneStyle" class="block text-lg font-semibold text-gray-700 mb-2">
+                    4. Tono y Estilo de Comunicación:
+                </label>
+                <select id="toneStyle" name="toneStyle"
+                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+                    <option value="clara, concisa y amigable" selected>Clara, concisa y amigable</option>
+                    <option value="formal y profesional">Formal y profesional</option>
+                    <option value="técnica pero alentadora">Técnica pero alentadora</option>
+                    <option value="detallada y explicativa">Detallada y explicativa</option>
+                </select>
+            </div>
+
+            <!-- Manejo de Respuestas Desconocidas -->
+            <div>
+                <label for="unknownResponse" class="block text-lg font-semibold text-gray-700 mb-2">
+                    5. ¿Qué debe hacer si no encuentra la respuesta en su material?
+                </label>
+                <textarea id="unknownResponse" name="unknownResponse" rows="3"
+                          placeholder="Ej: Indicar que la información no está disponible en su material, sugerir una sección específica a revisar, o pedir al estudiante que consulte al profesor."
+                          class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+Si una pregunta no puede ser respondida directamente con la información que tienes, debes decirlo explícitamente e indicar: "Lo siento, esa pregunta no está cubierta en el material de estudio que se me ha proporcionado. Por favor, consulta a tu profesor para más detalles." Nunca inventes información ni uses conocimientos externos.
+                </textarea>
+            </div>
+
+            <!-- Instrucciones Adicionales -->
+            <div>
+                <label for="additionalInstructions" class="block text-lg font-semibold text-gray-700 mb-2">
+                    6. Instrucciones Adicionales (Opcional - ej: qué evitar, temas específicos):
+                </label>
+                <textarea id="additionalInstructions" name="additionalInstructions" rows="4"
+                          placeholder="Ej: Evita dar opiniones personales. No respondas preguntas sobre calificaciones. Sé muy paciente con las preguntas repetitivas."
+                          class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"></textarea>
+            </div>
+
+            <button type="button" id="generatePrompt"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                <span id="buttonText">Generar System Prompt</span>
+                <span id="loadingSpinner" class="spinner hidden"></span>
+            </button>
+        </form>
+
+        <div id="resultContainer" class="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-inner hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                System Prompt Generado:
+            </h2>
+            <pre id="generatedPrompt" class="whitespace-pre-wrap break-words bg-gray-100 p-4 rounded-md text-gray-800 text-base leading-relaxed"></pre>
+            <button id="copyPrompt"
+                    class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                Copiar Prompt
+            </button>
+            <div id="copyMessage" class="mt-2 text-sm text-center text-green-700 hidden">
+                ¡Copiado al portapapeles!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('generatePrompt').addEventListener('click', generateSystemPrompt);
+        document.getElementById('copyPrompt').addEventListener('click', copyToClipboard);
+
+        // ¡IMPORTANTE! Reemplaza esta URL con la URL pública de tu servidor backend (donde ejecutas app.py)
+        // Por ejemplo, si lo alojas en un servicio como Render, Heroku, o tu propio servidor.
+        // Si lo ejecutas localmente, sería algo como 'http://127.0.0.1:5000/generate-prompt'
+        const BACKEND_API_URL = "http://127.0.0.1:5000/generate-prompt"; // <--- ¡REEMPLAZA ESTO CON TU URL PÚBLICA!
+
+        async function generateSystemPrompt() {
+            const courseName = document.getElementById('courseName').value.trim();
+            const botRole = document.getElementById('botRole').value.trim();
+            const mainPurpose = document.getElementById('mainPurpose').value.trim();
+            const toneStyle = document.getElementById('toneStyle').value.trim();
+            const unknownResponse = document.getElementById('unknownResponse').value.trim();
+            const additionalInstructions = document.getElementById('additionalInstructions').value.trim();
+
+            if (!courseName || !mainPurpose) {
+                alert("Por favor, completa al menos el 'Nombre de la Materia' y el 'Propósito Principal'.");
+                return;
+            }
+
+            // Show loading spinner and disable button
+            const generateButton = document.getElementById('generatePrompt');
+            const buttonText = document.getElementById('buttonText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            generateButton.disabled = true;
+            buttonText.textContent = 'Generando...';
+            loadingSpinner.classList.remove('hidden');
+
+            // Construct the prompt for Gemini (this will be sent to your backend)
+            let userPrompt = `Genera un "System Prompt" detallado para un chatbot educativo con las siguientes características:\n\n`;
+            userPrompt += `1. **Nombre de la Materia:** "${courseName}"\n`;
+            userPrompt += `2. **Rol del Chatbot:** "${botRole}"\n`;
+            userPrompt += `3. **Propósito Principal:** "${mainPurpose}"\n`;
+            userPrompt += `4. **Tono y Estilo de Comunicación:** "${toneStyle}"\n`;
+            userPrompt += `5. **Manejo de Respuestas Desconocidas:** "${unknownResponse}"\n`;
+            if (additionalInstructions) {
+                userPrompt += `6. **Instrucciones Adicionales:** "${additionalInstructions}"\n`;
+            }
+            userPrompt += `\nAsegúrate de que el prompt generado sea conciso, claro y directamente aplicable en la configuración de un chatbot de IA, enfatizando que su conocimiento se basa exclusivamente en el material de estudio proporcionado.`;
+
+            // Prepare the payload to send to your backend
+            const payload = { userPrompt: userPrompt };
+
+            try {
+                // Call your backend proxy instead of Gemini API directly
+                const response = await fetch(BACKEND_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.generatedPrompt) {
+                    document.getElementById('generatedPrompt').textContent = result.generatedPrompt;
+                } else {
+                    document.getElementById('generatedPrompt').textContent = "Error: No se pudo generar el prompt. Inténtalo de nuevo.";
+                    console.error("Unexpected backend response structure:", result);
+                }
+            } catch (error) {
+                document.getElementById('generatedPrompt').textContent = `Error al conectar con el servidor: ${error.message}. Asegúrate de que el servidor esté corriendo y la URL sea correcta.`;
+                console.error("Fetch error to backend:", error);
+            } finally {
+                // Hide loading spinner and enable button
+                generateButton.disabled = false;
+                buttonText.textContent = 'Generar System Prompt';
+                loadingSpinner.classList.add('hidden');
+                document.getElementById('resultContainer').classList.remove('hidden');
+                document.getElementById('copyMessage').classList.add('hidden');
+            }
+        }
+
+        function copyToClipboard() {
+            const promptText = document.getElementById('generatedPrompt').textContent;
+            navigator.clipboard.writeText(promptText).then(() => {
+                const copyMessage = document.getElementById('copyMessage');
+                copyMessage.classList.remove('hidden');
+                setTimeout(() => {
+                    copyMessage.classList.add('hidden');
+                }, 2000); // Ocultar mensaje después de 2 segundos
+            }).catch(err => {
+                console.error('Error al copiar al portapapeles:', err);
+                alert('No se pudo copiar el texto. Por favor, cópialo manualmente.');
+            });
+        }
+    </script>
+</body>
+</html>
