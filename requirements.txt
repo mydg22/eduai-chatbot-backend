@@ -1,3 +1,4 @@
 Flask
 Flask-Cors
 requests
+gunicorn # Añade gunicorn para Render, es un servidor WSGI de producción
